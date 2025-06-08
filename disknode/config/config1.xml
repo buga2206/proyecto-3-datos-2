@@ -1,0 +1,11 @@
+<node_config>
+  <!-- cambiar el ip del host, es el ip de la maquina donde se ejecuta -->
+  <host>192.168.100.110</host>
+  <port>9001</port>
+  <storage_path>C:/TCMFS/Data/Node1</storage_path>
+  <controller>
+    <!-- cambiar el ip del server, es el ip de donde se ejecuta el servidor -->
+    <host>192.168.100.110</host>
+    <port>8000</port>
+  </controller>
+</node_config>

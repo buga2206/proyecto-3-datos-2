@@ -1,0 +1,9 @@
+<node_config>
+  <host>192.168.100.110</host>
+  <port>9002</port>
+  <storage_path>C:/TCMFS/Data/Node2</storage_path>
+  <controller>
+    <host>192.168.100.110</host>
+    <port>8000</port>
+  </controller>
+</node_config>
