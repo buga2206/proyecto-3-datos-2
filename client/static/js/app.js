@@ -1,4 +1,4 @@
-// Obtiene la URL correcta del servidor (localhost o IP de la LAN)
+// Obtiene la URL correcta del servidor
 function getServerURL() {
   return `http://${window.location.hostname}:8000`;
 }
@@ -25,7 +25,7 @@ async function disconnect() {
   document.getElementById('status').innerHTML = 'Estado: <span class="red">Desconectado</span>';
 }
 
-// Helper: convierte base64 a Blob
+// Helper base64→Blob (igual)
 function b64toBlob(b64Data, contentType = '', sliceSize = 512) {
   const byteCharacters = atob(b64Data);
   const byteArrays = [];
@@ -40,23 +40,47 @@ function b64toBlob(b64Data, contentType = '', sliceSize = 512) {
   return new Blob(byteArrays, { type: contentType });
 }
 
-// Subir PDF
+// REFRESCAR LISTA de PDFs en metadata.json
+async function refreshFileList() {
+  const ul = document.getElementById('fileList');
+  ul.innerHTML = '';  // limpiar lista
+  const res = await fetch(getServerURL() + '/api/command', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ cmd:'list' })
+  });
+  const json = await res.json();
+  if (json.status==='ok' && Array.isArray(json.files)) {
+    json.files.forEach(name => {
+      const li = document.createElement('li');
+      li.textContent = name;
+      li.onclick = () => {
+        document.getElementById('downloadName').value = name;
+      };
+      ul.appendChild(li);
+    });
+    if (json.files.length===0) {
+      const li = document.createElement('li');
+      li.textContent = '(no hay archivos aún)';
+      ul.appendChild(li);
+    }
+  } else {
+    alert(json.msg || 'No se pudo listar PDFs');
+  }
+}
+
+// SUBIR PDF (igual)
 document.getElementById('btnUpload').addEventListener('click', () => {
   const fileInput = document.getElementById('uploadFile');
   const file = fileInput.files[0];
   if (!file) return;
-
   const reader = new FileReader();
   reader.onload = async () => {
     const base64Data = reader.result.split(',')[1];
-    const payload = {
-      cmd: 'upload',
-      name: file.name,
-      data: base64Data
-    };
+    const payload = { cmd:'upload', name:file.name, data:base64Data };
     const res = await fetch(getServerURL() + '/api/command', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {'Content-Type':'application/json'},
       body: JSON.stringify(payload)
     });
     const json = await res.json();
@@ -65,56 +89,41 @@ document.getElementById('btnUpload').addEventListener('click', () => {
   reader.readAsDataURL(file);
 });
 
-// Eliminar PDF
+// ELIMINAR PDF (igual)
 document.getElementById('btnDelete').addEventListener('click', async () => {
   const name = document.getElementById('deleteName').value.trim();
   if (!name) return;
-
   const res = await fetch(getServerURL() + '/api/command', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ cmd: 'delete', name })
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ cmd:'delete', name })
   });
   const json = await res.json();
   alert(json.msg || 'Eliminación completada');
 });
 
-// Descargar PDF
+// LISTAR PDF → sólo al pulsar el botón
+document.getElementById('btnList').addEventListener('click', refreshFileList);
+
+// DESCARGAR PDF → usando el campo de texto
 document.getElementById('btnDownload').addEventListener('click', async () => {
   const name = document.getElementById('downloadName').value.trim();
-  if (!name) return;
-
+  if (!name) return alert('Escriba el nombre exacto del PDF');
   const res = await fetch(getServerURL() + '/api/command', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ cmd: 'download', name })
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ cmd:'download', name })
   });
   const json = await res.json();
-  if (json.status === 'ok' && json.data) {
+  if (json.status==='ok' && json.data) {
     const blob = b64toBlob(json.data, 'application/pdf');
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = name;
+    a.href = url; a.download = name;
     document.body.appendChild(a);
     a.click();
     a.remove();
   } else {
     alert(json.msg || 'Error al descargar');
-  }
-});
-
-// Listar PDFs
-document.getElementById('btnList').addEventListener('click', async () => {
-  const res = await fetch(getServerURL() + '/api/command', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ cmd: 'list' })
-  });
-  const json = await res.json();
-  if (json.status === 'ok' && Array.isArray(json.files)) {
-    alert('Archivos PDF:\n' + json.files.join('\n'));
-  } else {
-    alert(json.msg || 'No se pudo listar');
   }
 });

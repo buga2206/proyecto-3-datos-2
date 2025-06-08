@@ -10,6 +10,8 @@
     #status { font-weight: bold; margin-top: 1rem; }
     .green { color: green; }
     .red { color: red; }
+    #fileList li { cursor: pointer; margin: 0.25rem 0; }
+    #fileList li:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -17,24 +19,26 @@
 
   <button onclick="connect()">Conectar al servidor</button>
   <button onclick="disconnect()">Desconectar</button>
-
   <div id="status">Estado: <span class="red">Desconectado</span></div>
-
   <hr />
 
   <h2>Operaciones</h2>
 
+  <!-- SUBIR PDF -->
   <input type="file" id="uploadFile" accept="application/pdf">
   <button id="btnUpload">Subir archivo PDF</button><br><br>
 
+  <!-- ELIMINAR PDF -->
   <input type="text" id="deleteName" placeholder="Nombre de archivo">
   <button id="btnDelete">Eliminar archivo PDF</button><br><br>
 
+  <!-- DESCARGAR PDF -->
   <input type="text" id="downloadName" placeholder="Nombre de archivo">
-  <button id="btnDownload">Descargar archivo PDF</button><br><br>
+  <button id="btnDownload">Descargar PDF</button>
 
-  <button id="btnList">Listar archivos PDF</button>
-
+  <!-- LISTAR PDF -->
+  <button id="btnList">Listar archivos PDF</button><br>
+  <ul id="fileList"></ul><br>
   <script src="js/app.js"></script>
 </body>
 </html>
