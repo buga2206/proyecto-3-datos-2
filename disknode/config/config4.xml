@@ -1,7 +1,7 @@
 <node_config>
   <host>192.168.100.110</host>
   <port>9004</port>
-  <storage_path>C:/TCMFS/Data/Node4</storage_path>
+  <storage_path>C:/TECMFS/Data/Node4</storage_path>
   <controller>
     <host>192.168.100.110</host>
     <port>8000</port>
