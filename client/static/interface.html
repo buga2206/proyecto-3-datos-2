@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>TECMFS Client</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f0f0; padding: 2rem; }
+    h1 { color: #096B35; }
+    button { margin: 0.5rem; padding: 1rem; font-size: 1rem; }
+    #status { font-weight: bold; margin-top: 1rem; }
+    .green { color: green; }
+    .red { color: red; }
+  </style>
+</head>
+<body>
+  <h1>Cliente TECMFS</h1>
+
+  <button onclick="connect()">Conectar al servidor</button>
+  <button onclick="disconnect()">Desconectar</button>
+
+  <div id="status">Estado: <span class="red">Desconectado</span></div>
+
+  <hr />
+
+  <h2>Operaciones</h2>
+
+  <input type="file" id="uploadFile" accept="application/pdf">
+  <button id="btnUpload">Subir archivo PDF</button><br><br>
+
+  <input type="text" id="deleteName" placeholder="Nombre de archivo">
+  <button id="btnDelete">Eliminar archivo PDF</button><br><br>
+
+  <input type="text" id="downloadName" placeholder="Nombre de archivo">
+  <button id="btnDownload">Descargar archivo PDF</button><br><br>
+
+  <button id="btnList">Listar archivos PDF</button>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
